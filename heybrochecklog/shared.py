@@ -35,7 +35,7 @@ def format_pattern(pattern, append=None):
 def open_json(*paths):
     """Open the language JSON patterns file and return it."""
     basepath = get_path()
-    with open(os.path.join(basepath, 'resources', *paths)) as jsonfile:
+    with open(os.path.join(basepath, 'resources', *paths), encoding='utf-8') as jsonfile:
         language_data = json.load(jsonfile)
 
     return language_data
