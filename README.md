@@ -53,7 +53,7 @@ then
 ```bash
 cd hey-bro-check-log
 python3 -m heybrochecklog -h
-python3 -m heybrochecklog -t yourlogfile --pure-translate --fix-checksum
+python3 -m heybrochecklog -t yourlogfile_russian.log --pure-translate --fix-checksum > /tmp/your-translated-log-file_english.log
 ```
 
 ## Running CLI
