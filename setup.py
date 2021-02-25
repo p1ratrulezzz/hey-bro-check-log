@@ -37,7 +37,7 @@ setup(
     },
     packages=[
         'heybrochecklog', 'heybrochecklog.markup', 'heybrochecklog.resources',
-        'heybrochecklog.score', 'heybrochecklog.score.modules',
+        'heybrochecklog.score', 'heybrochecklog.score.modules', 'heybrochecklog.printer',
         'scripts.eac95_builder'
     ],
     package_dir={"": "."},
