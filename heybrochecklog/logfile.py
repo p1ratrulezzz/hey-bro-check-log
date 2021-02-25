@@ -4,7 +4,6 @@ import re
 
 from heybrochecklog.resources import DEDUCTIONS
 
-
 class LogFile:
     """A log file class containing variables, score, deductions, etc."""
 

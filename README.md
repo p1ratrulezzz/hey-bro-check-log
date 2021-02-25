@@ -59,7 +59,7 @@ python3 -m heybrochecklog -t yourlogfile_russian.log --pure-translate --fix-chec
 ## Running CLI
 
 ```
-usage: heybrochecklog [-h] [-t] [-m] [-s] log
+usage: heybrochecklog [-h] [-t] [-m] [-s] [-c] [-z] [-p] [-f] [-o OUTPUT_FILE] log [log ...]
 
 Tool to analyze, translate, and score a CD Rip Log.
 
@@ -67,17 +67,34 @@ positional arguments:
   log               log file to check.
 
 optional arguments:
-  -h, --help            show this help message and exit
-  -t, --translate       translate a foreign log to English
-  -m, --markup          print the marked up version of the log after analyzing
-  -s, --score-only      Only print the score of the log.
-  -c, --check-checksum  Check the checksum
-  -z, --no-sub-zero     Display 0 score if the score is lower than zero
-  -p, --pure-translate  Do not include translation header info
-  -f, --fix-checksum    Only for -t (--translate). Fix checksum for the new
-                        log (works only for EAC)
+    -h, --help            show this help message and exit
+    -t, --translate       translate a foreign log to English
+    -m, --markup          print the marked up version of the log after analyzing
+    -s, --score-only      Only print the score of the log.
+    -c, --check-checksum  Check the checksum
+    -z, --no-sub-zero     Display 0 score if the score is lower than zero
+    -p, --pure-translate  Do not include translation header info
+    -f, --fix-checksum    Only for -t (--translate). Fix checksum for the new log (works only for EAC)
+    -o OUTPUT_FILE, --output-file OUTPUT_FILE
+                          Write output to file instead of stdout
 
 ```
+
+## Examples
+
+### Check log and checksum
+
+```bash
+heybrochecklog -c /tmp/somelogfile.log
+```
+
+### Translate russian log to english
+
+```bash
+heybrochecklog -t -p -f /tmp/somelogfile_ru.log -o /tmp/somelogfile_en.log
+```
+
+Note: the --output-file is required to create a correct logfile in correct encoding that will pass checks on [EAC Log Checker Online](https://www.exactaudiocopy.de/log/check.aspx)
 
 ## Troubleshooting
 

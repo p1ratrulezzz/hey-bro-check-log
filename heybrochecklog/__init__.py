@@ -7,6 +7,8 @@ from pathlib import Path  # noqa: E402
 
 from heybrochecklog.score import score_log  # noqa: E402
 from heybrochecklog.translate import translate_log  # noqa: E402
+from heybrochecklog.printer import Printer
+from heybrochecklog.printer.printer_file import PrinterFile
 
 def parse_args():
     """Parse arguments."""
@@ -61,6 +63,11 @@ def parse_args():
         action='store_true',
     )
 
+    parser.add_argument(
+        '-o',
+        '--output-file',
+        help='Write output to file instead of stdout',
+    )
 
     return parser.parse_args()
 
@@ -80,24 +87,33 @@ def runner():
 
 def score_(args, log_file, log_path):
     log = score_log(log_file, args)
+    printer = Printer()
+    if args.output_file:
+        printer = PrinterFile(args.output_file)
+
     if args.score_only:
         if not log['unrecognized']:
-            print(log['score'])
+            printer.print(log['score'])
         else:
-            print('Log is unrecognized: {}'.format(log['unrecognized']))
+            printer.print('Log is unrecognized: {}'.format(log['unrecognized']))
     else:
         try:
-            print(format_score(log_path, log, args.markup))
+            printer.print(format_score(log_path, log, args.markup))
         except UnicodeEncodeError as error:
-            print('Cannot encode logpath: {}'.format(error))
+            printer.print('Cannot encode logpath: {}'.format(error))
 
 
 def translate_(args, log_file, log_path):
     log = translate_log(log_file, args.fix_checksum)
+
+    printer = Printer()
+    if args.output_file:
+        printer = PrinterFile(args.output_file)
+
     try:
-        print(format_translation(log_path, log, args.pure_translate))
+        printer.print(format_translation(log_path, log, args.pure_translate))
     except UnicodeEncodeError as error:
-        print('Cannot encode logpath: {}'.format(error))
+        printer.print('Cannot encode logpath: {}'.format(error))
 
 
 def format_score(logpath, log, markup):
