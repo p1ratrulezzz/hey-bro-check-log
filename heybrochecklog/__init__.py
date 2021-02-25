@@ -8,7 +8,6 @@ from pathlib import Path  # noqa: E402
 from heybrochecklog.score import score_log  # noqa: E402
 from heybrochecklog.translate import translate_log  # noqa: E402
 
-
 def parse_args():
     """Parse arguments."""
     description = 'Tool to analyze, translate, and score a CD Rip Log.'
@@ -34,6 +33,35 @@ def parse_args():
         action='store_true',
     )
 
+    parser.add_argument(
+        '-c',
+        '--check-checksum',
+        help='Check the checksum',
+        action='store_true',
+    )
+
+    parser.add_argument(
+        '-z',
+        '--no-sub-zero',
+        help='Display 0 score if the score is lower than zero',
+        action='store_true',
+    )
+
+    parser.add_argument(
+        '-p',
+        '--pure-translate',
+        help='Do not include translation header info',
+        action='store_true',
+    )
+
+    parser.add_argument(
+        '-f',
+        '--fix-checksum',
+        help='Only for -t (--translate). Fix checksum for the new log (works only for EAC)',
+        action='store_true',
+    )
+
+
     return parser.parse_args()
 
 
@@ -51,7 +79,7 @@ def runner():
 
 
 def score_(args, log_file, log_path):
-    log = score_log(log_file, args.markup)
+    log = score_log(log_file, args)
     if args.score_only:
         if not log['unrecognized']:
             print(log['score'])
@@ -65,9 +93,9 @@ def score_(args, log_file, log_path):
 
 
 def translate_(args, log_file, log_path):
-    log = translate_log(log_file)
+    log = translate_log(log_file, args.fix_checksum)
     try:
-        print(format_translation(log_path, log))
+        print(format_translation(log_path, log, args.pure_translate))
     except UnicodeEncodeError as error:
         print('Cannot encode logpath: {}'.format(error))
 
@@ -95,18 +123,24 @@ def format_score(logpath, log, markup):
     return '\n'.join(output)
 
 
-def format_translation(logpath, log):
+def format_translation(logpath, log, pure_translate = False):
     """Turn a translated log JSON into a pretty string."""
     output = []
-    output.append('\nLog: ' + logpath)
+    if not pure_translate:
+        output.append('\nLog: ' + logpath)
 
     if log['unrecognized']:
         output.append('\nFailed to recognize log. {}'.format(log['unrecognized']))
-    elif log['language'] == 'english':
+    elif not pure_translate and log['language'] == 'english':
         output.append('\nLog is already in English!')
     else:
-        output.append('\nOriginal language: {}'.format(log['language']).title())
-        output.append('\n---------------------------------------------------')
-        output.append('\n' + log['log'])
+        if not pure_translate:
+            output.append('\nOriginal language: {}'.format(log['language']).title())
+            output.append('\n---------------------------------------------------')
+            output.append('\n')
+        output.append(log['log'])
 
-    return '\n'.join(output)
+    if not pure_translate:
+        output.append('\n')
+
+    return ''.join(output)

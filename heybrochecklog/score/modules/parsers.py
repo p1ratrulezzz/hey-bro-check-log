@@ -5,6 +5,8 @@ import re
 from heybrochecklog import UnrecognizedException
 from heybrochecklog.resources import VERSIONS
 from heybrochecklog.shared import format_pattern as fmt_ptn
+from heybrochecklog import logfile
+import eac_logchecker
 
 
 def index_toc(log):
@@ -69,7 +71,7 @@ def parse_errors_xld(log, err_patterns, track_num, line):
                 log.track_errors[error].append([track_num, int(result.group(1))])
 
 
-def parse_checksum(log, regex, imp_version, deduc_line):
+def parse_checksum(log: object, regex, imp_version, deduc_line):
     """Parse line(s) for presence of a checksum."""
     re_checksum = re.compile(fmt_ptn(regex))
     for line in log.contents[log.index_footer :]:

@@ -8,7 +8,6 @@ import re
 from heybrochecklog import UnrecognizedException
 from heybrochecklog.resources import EAC_RIPLINES
 
-
 def analyze_log(log):
     """Analyze a log file and determine some generic background information."""
     log.ripper = get_ripper(log.contents)

@@ -173,3 +173,6 @@ class LogChecker:
         log.score -= sum(
             [de[1] for de in log.deductions.values() if isinstance(de[1], int)]
         )
+
+        if log.no_sub_zero and log.score < 0:
+            log.score = 0

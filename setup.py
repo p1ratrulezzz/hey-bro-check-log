@@ -46,6 +46,6 @@ setup(
             "*.db", "*.json", "eac/*.json", "eac95/*.json"
         ]
     },
-    install_requires=['chardet==3.*,>=3.0.4'],
+    install_requires=['chardet==3.*,>=3.0.4', 'eac_logchecker'],
     extras_require={"dev": ["pytest==5.*,>=5.3.5"]},
 )

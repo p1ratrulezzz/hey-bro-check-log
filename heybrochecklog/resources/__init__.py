@@ -63,6 +63,7 @@ DEDUCTIONS = {
     ],
     'Normalization': ['Destructive normalization used', 100],
     'Compression offset': ['Ripped with compression offset', 100],
+    'Checksum was modified': ['Checksum was modified', 100],
 }
 
 VERSIONS = {

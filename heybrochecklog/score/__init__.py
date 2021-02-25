@@ -9,11 +9,13 @@ from heybrochecklog.score import eac, eac95, xld
 from heybrochecklog.shared import get_log_contents, open_json
 
 
-def score_log(log_file, markup=False):
+def score_log(log_file, args):
     try:
         contents = get_log_contents(log_file)
         log = LogFile(contents)
-        log = score_wrapper(log, markup)
+        log.check_checksum = args.check_checksum
+        log.no_sub_zero = args.no_sub_zero
+        log = score_wrapper(log, args.markup)
     except UnicodeDecodeError:
         log = LogFile('')
         log.unrecognized = 'Could not decode log file.'

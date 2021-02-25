@@ -27,6 +27,10 @@ def split_combined(log):
         new_log = LogFile(
             log.full_contents[line : (log_indices[i + 1])], ripper=log.ripper
         )
+
+        for prop in ['check_checksum', 'no_sub_zero']:
+            setattr(new_log, prop, getattr(log, prop))
+
         logs.append(new_log)
 
         # Return the array of logs if the end index of section is

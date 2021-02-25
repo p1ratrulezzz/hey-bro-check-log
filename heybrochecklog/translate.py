@@ -6,6 +6,8 @@ the heybrochecklog package
 import html
 import re
 from collections import OrderedDict
+from eac_logchecker import Log as EacLogcheckerLog
+from eac_logchecker import eac_verify as eac_logchecker_verify
 
 from heybrochecklog import UnrecognizedException
 from heybrochecklog.analyze import analyze_log
@@ -13,12 +15,12 @@ from heybrochecklog.logfile import LogFile
 from heybrochecklog.shared import get_log_contents, open_json
 
 
-def translate_log(log_file):
+def translate_log(log_file, fix_checksum = False):
     """Initialize and capture all logs."""
     try:
         contents = get_log_contents(log_file)
         log = LogFile(contents)
-        return translate_wrapper(log)
+        return translate_wrapper(log, fix_checksum)
     except UnicodeDecodeError:
         return {'unrecognized': 'Could not decode log'}
 
@@ -32,7 +34,7 @@ def translate_log_from_contents(contents):
         return {'unrecognized': 'Could not decode log'}
 
 
-def translate_wrapper(log):
+def translate_wrapper(log, fix_checksum = False):
     """Translate log given log file."""
     try:
         analyze_log(log)
@@ -49,7 +51,15 @@ def translate_wrapper(log):
             'log': ''.join([html.escape(line) for line in log.full_contents]),
         }
 
-    return sub_english(log)
+    english_log = sub_english(log)
+
+    if fix_checksum and log.ripper == 'EAC':
+        eac_log = EacLogcheckerLog(english_log['log'])
+        eac_logchecker_verify(eac_log)
+        if (eac_log.checksum and eac_log.old_checksum):
+            english_log['log'] = english_log['log'].replace(eac_log.old_checksum, eac_log.checksum)
+
+    return english_log
 
 
 def sub_english(log):
@@ -78,6 +88,7 @@ def sub_english(log):
                 if regex.search(line):
                     for value in english[key]:
                         line = regex.sub(value, line)
+
             new_log.append(line)
 
     re_space_settings(new_log)

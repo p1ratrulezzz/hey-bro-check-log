@@ -20,6 +20,8 @@ class LogFile:
         self.version = None
         self.album = None
         self.unrecognized = None
+        self.check_checksum = False
+        self.no_sub_zero = False
 
         # Some other log settings
         self.range = False
@@ -77,6 +79,8 @@ class LogFile:
             'score': self.score,
             'version': self.version,
             'unrecognized': False,
+            'no_sub_zero': self.no_sub_zero,
+            'check_checksum': self.check_checksum,
             'contents': ''.join(self.full_contents),
         }
 
@@ -127,6 +131,13 @@ class LogFile:
     def has_deductions(self, *deductions):
         """Return whether or not log has every deduction in deductions."""
         return all(de in self.deductions for de in deductions)
+
+    def to_string(self):
+        """
+        Get string contents
+        :return: str
+        """
+        return str("").join(self.full_contents)
 
 
 def format_full_contents(full_contents):

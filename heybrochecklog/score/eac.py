@@ -7,6 +7,8 @@ from heybrochecklog.markup import markup
 from heybrochecklog.score.logchecker import LogChecker
 from heybrochecklog.score.modules import combined, parsers, validation
 from heybrochecklog.shared import format_pattern as fmt_ptn
+from eac_logchecker import Log as EacLogcheckerLog
+from eac_logchecker import eac_verify as eac_logchecker_verify
 
 
 class EACChecker(LogChecker):
@@ -31,6 +33,10 @@ class EACChecker(LogChecker):
             parsers.parse_checksum(
                 log, self.patterns['checksum'], 'V1.0 beta 1', 'EAC <1.0'
             )
+
+            if log.checksum and log.check_checksum:
+                self.check_checksum_eac_logchecher(log)
+
             if self.markup:
                 markup(log, self.patterns, self.translation)
 
@@ -156,3 +162,26 @@ class EACChecker(LogChecker):
                 log.add_deduction(error, len(log.track_errors[error]))
 
         super().deduct_and_score(log)
+
+    def check_checksum_eac_logchecher(self, log):
+        """
+        :param log: heybrochecklog.logfile.Log
+        :return: heybrochecklog.logfile.Log
+        """
+        log_obj = EacLogcheckerLog(log.to_string())
+        eac_logchecker_verify(log_obj)
+
+        if log_obj.version is None or log_obj.old_checksum is None:
+            message = 'Log entry has no checksum!'
+            status = "NO"
+        elif log_obj.modified or log_obj.old_checksum != log_obj.checksum:
+            message = 'Log entry was modified, checksum incorrect!'
+            status = "BAD"
+        else:
+            message = 'Log entry is fine!'
+            status = "OK"
+
+        if status != "OK":
+            log.add_deduction('Checksum was modified')
+
+        return log
