@@ -42,7 +42,7 @@ sudo python3 setup.py install --force
 pip install chardet=='3.*,>=3.0.4' eac_logchecker
 ```
 
-or 
+or
 
 ```bash
 pip3 install chardet=='3.*,>=3.0.4' eac_logchecker
@@ -110,4 +110,3 @@ and try installing with overwrite
 ```bash
 sudo python3 setup.py install --force
 ```
-
