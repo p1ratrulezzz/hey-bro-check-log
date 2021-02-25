@@ -34,7 +34,7 @@ apt install python3
 ```bash
 git clone -b '1.4.0' https://github.com/p1ratrulezzz/hey-bro-check-log.git
 cd hey-bro-check-log
-sudo python3 setup.py install
+sudo python3 setup.py install --force
 ```
 
 ## OR Use without installation
@@ -78,3 +78,19 @@ optional arguments:
                         log (works only for EAC)
 
 ```
+
+## Troubleshooting
+
+If you have older version installed from package, remove it
+
+```bash
+sudo pip3 uninstall heybrochecklog
+pip3 uninstall heybrochecklog
+```
+
+and try installing with overwrite
+
+```bash
+sudo python3 setup.py install --force
+```
+
